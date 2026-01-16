@@ -7,7 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class AuthorRepository {
-    private List<Author> authorList = new ArrayList<>();
+    private List<Author> authorList;
+    public AuthorRepository(){
+        this.authorList=new ArrayList<>();
+    }
     private static Long staticId = 1L;
     public void save(Author author){
         this.authorList.add(author);
