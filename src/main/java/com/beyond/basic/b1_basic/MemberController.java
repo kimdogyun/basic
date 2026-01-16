@@ -138,6 +138,7 @@ public class MemberController {
 //    case3.body의 content-type 이 json
 //    case3-1)일반적인json데이터 처리
 //    형식 : {"name":"hong" , "email":"h@naver.com"}
+
     @PostMapping("/json")
     @ResponseBody
 //    @RequestBody :json데이터를 객체로 파싱
