@@ -5,6 +5,7 @@ import com.beyond.basic.b2_board.author.dtos.AuthorCreateDto;
 import com.beyond.basic.b2_board.author.dtos.AuthorDetailDto;
 import com.beyond.basic.b2_board.author.dtos.AuthorListDto;
 import com.beyond.basic.b2_board.author.service.AuthorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,38 +16,36 @@ import java.util.List;
 //4.회원탈퇴 - DeleteMapping - id 삭제 ,id만 출력
 @RestController
 @RequestMapping("/author")
-//회원가입
+
 public class AuthorController {
-    private AuthorService authorService;
-    public AuthorController(){
-        this.authorService = new AuthorService();
+    private final AuthorService authorService;
+
+    @Autowired
+    public AuthorController(AuthorService authorService) {
+        this.authorService = authorService;
     }
+    //회원가입
     @PostMapping("/create")
-    public String create(@RequestBody AuthorCreateDto dto){
+    public String create(@RequestBody AuthorCreateDto dto) {
         authorService.save(dto);
         return "ok";
-
     }
-//    회원목록조회
+    //    회원목록조회
     @GetMapping("/list")
-    public List<AuthorListDto> findAll(){
+    public List<AuthorListDto> findAll() {
         List<AuthorListDto> dtoList = authorService.findAll();
         return dtoList;
     }
-//    회원상세조회
+    //    회원상세조회
     @GetMapping("/{id}")
-
-    public AuthorDetailDto findById(@PathVariable long id){
+    public AuthorDetailDto findById(@PathVariable long id) {
         AuthorDetailDto dto = authorService.findById(id);
         return dto;
-
     }
-//    회원삭제
+    //    회원삭제
     @DeleteMapping("/{id}")
-
-    public String delete(@PathVariable long id){
+    public String delete(@PathVariable long id) {
         System.out.println(id);
         return "ok";
-
     }
 }

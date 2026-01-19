@@ -1,30 +1,35 @@
 package com.beyond.basic.b2_board.author.repository;
 
 import com.beyond.basic.b2_board.author.domain.Author;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AuthorRepository {
+@Repository
+public class AuthorMemoryRepository {
     private List<Author> authorList;
 
-    public AuthorRepository(){
-        this.authorList=new ArrayList<>();
+    public AuthorMemoryRepository() {
+        this.authorList = new ArrayList<>();
     }
 
     private static Long staticId = 1L;
-    public void save(Author author){
+
+    public void save(Author author) {
         this.authorList.add(author);
-        author.setId(staticId++);
+//        author.setId(staticId++);
     }
-    public List<Author> findAll(){
+
+    public List<Author> findAll() {
         return this.authorList;
     }
-    public Optional<Author> findById(Long id){
+
+    public Optional<Author> findById(Long id) {
         Author author = null;
-        for (Author a : this.authorList){
-            if (a.getId().equals(id)){
+        for (Author a : this.authorList) {
+            if (a.getId().equals(id)) {
                 author = a;
             }
 
