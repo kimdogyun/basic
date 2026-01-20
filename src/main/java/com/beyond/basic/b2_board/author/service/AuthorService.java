@@ -6,6 +6,7 @@ import com.beyond.basic.b2_board.author.dtos.AuthorDetailDto;
 import com.beyond.basic.b2_board.author.dtos.AuthorListDto;
 import com.beyond.basic.b2_board.author.repository.AuthorJdbcRepository;
 import com.beyond.basic.b2_board.author.repository.AuthorMemoryRepository;
+import com.beyond.basic.b2_board.author.repository.AuthorMybatisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,11 @@ public class AuthorService {
 //    장점1)final을 통해 상수로 사용 가능(안정성향상)
 //    장점2)다형성 구현가능(interface 사용가능)
 //    장점3)순환참조방지(컴파일타임에 에러check)
-    private final AuthorJdbcRepository authorMemoryRepository;
+    private final AuthorMybatisRepository authorMemoryRepository;
 
     //    생성자가 하나밖에 없을떄에는 Autowired생략가능
     @Autowired
-    public AuthorService(AuthorJdbcRepository authorMemoryRepository) {
+    public AuthorService(AuthorMybatisRepository authorMemoryRepository) {
         this.authorMemoryRepository = authorMemoryRepository;
     }
 //    의존성주입방법3.@RequiredArgsConstructor 어노테이션 사용
@@ -52,12 +53,16 @@ public class AuthorService {
 //                .build();
 //       방법2. toEntity, fromEntity 패턴을 통한 객체 조립
 //       객체조립이라는 반복적이 작업을 별도의 코드로 떄어내 공통화
-        Author author = dto.toEntity();
+
+//        email중복 여부 검증
+        if (authorMemoryRepository.findByEmail(dto.getEmail()).isPresent()){
+       throw new IllegalArgumentException("email 중복입니다");
+        }
+         Author author = dto.toEntity();
         authorMemoryRepository.save(author);
     }
 
     public AuthorDetailDto findById(Long id) {
-        authorMemoryRepository.findById(id);
         Optional<Author> optAtuhor = authorMemoryRepository.findById(id);
         Author author = optAtuhor.orElseThrow(() -> new NoSuchElementException("entity is not found"));
 //        dto  조립
@@ -84,6 +89,18 @@ public class AuthorService {
 //            AuthorListDto dto = AuthorListDto.fromEntity(author);
 //            dtoList.add(dto);
 //        }
-        return authorMemoryRepository.findAll().stream().map(a->AuthorListDto.fromEntity(a)).collect(Collectors.toList());
+        return authorMemoryRepository.findAll().stream().map(a -> AuthorListDto.fromEntity(a)).collect(Collectors.toList());
     }
-}
+
+    public void delete(Long id) {
+//        데이터 조회 후 없다면 예외처리
+        Optional<Author> opta = authorMemoryRepository.findById(id);
+        Author author = opta.orElseThrow(() -> new NoSuchElementException("NO"));
+//    삭제작업
+        authorMemoryRepository.delete(id);
+    }
+
+
+    }
+
+
