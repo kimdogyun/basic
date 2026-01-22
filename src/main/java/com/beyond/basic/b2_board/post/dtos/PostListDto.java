@@ -1,5 +1,6 @@
 package com.beyond.basic.b2_board.post.dtos;
 
+import com.beyond.basic.b2_board.author.domain.Author;
 import com.beyond.basic.b2_board.post.domain.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,12 +17,12 @@ public class PostListDto {
     private String category;
     private String authorEmail;
 
-    public static PostListDto fromEntity(Post post){
+    public static PostListDto fromEntity(Post post, Author author){
         return PostListDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .category(post.getCategory())
-                .authorEmail(post.getAuthorEmail())
+                .authorEmail(author.getEmail())
                 .build();
     }
 }

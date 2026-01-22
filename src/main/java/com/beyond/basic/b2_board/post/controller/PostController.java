@@ -6,6 +6,7 @@ import com.beyond.basic.b2_board.post.dtos.PostDetailDto;
 import com.beyond.basic.b2_board.post.service.PostService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,7 +27,6 @@ import java.util.List;
 //4.게시글삭제(/post/1) => DeleteMapping 쓰면서 실질은 update작업
 
 @RestController
-@RequestMapping("/post")
 public class PostController {
     private final PostService postService;
 
@@ -35,11 +35,10 @@ public class PostController {
         this.postService = postService;
     }
 
-    @PostMapping("/create")
-    public String create(@RequestBody @Valid PostCreateDto dto) {
+    @PostMapping("/post/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void PostCreate(@RequestBody PostCreateDto dto) {
         postService.save(dto);
-        return "ok";
-
     }
 
     @GetMapping("/posts")
@@ -48,13 +47,13 @@ public class PostController {
         return dtoList;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/post/{id}")
     public PostDetailDto findById(@PathVariable Long id) {
         PostDetailDto dto = postService.findById(id);
         return dto;
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/post/{id}")
     public String delete(@PathVariable Long id) {
         postService.delete(id);
         return "ok";

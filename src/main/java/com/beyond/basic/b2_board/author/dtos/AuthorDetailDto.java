@@ -14,13 +14,15 @@ public class AuthorDetailDto {
     private Long id;
     private String name;
     private String email;
+    private int postCount;
     private String password;
 
-    public static AuthorDetailDto formEntity(Author author) {
+    public static AuthorDetailDto formEntity(Author author, int postcount) {
         return AuthorDetailDto.builder()
                 .id(author.getId())
                 .name(author.getName())
                 .email(author.getEmail())
+                .postCount(postcount)
                 .password(author.getPassword())
                 .build();
 
