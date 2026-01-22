@@ -44,9 +44,7 @@ public class PostService {
         List<Post>postList = postRepository.findByDelYn("N");
         List<PostListDto>dtoList = new ArrayList<>();
         for (Post p : postList){
-            Author author = authorRepository.findById(p.getAuthorId())
-                    .orElseThrow(()->new EntityNotFoundException("X"));
-            PostListDto dto  = PostListDto.fromEntity(p,author);
+            PostListDto dto  = PostListDto.fromEntity(p);
             dtoList.add(dto);
         }
 
@@ -61,8 +59,9 @@ public class PostService {
         if ("Y".equals(post.getDelYn())) {
             throw new NoSuchElementException("삭제된 게시글입니다.");
         }
-        Author author = authorRepository.findById(post.getAuthorId()).orElseThrow(()->new EntityNotFoundException("X"));
-        PostDetailDto dto = PostDetailDto.fromEntity(post,author);
+//        Author author = authorRepository.findById(post.getAuthorId()).orElseThrow(()->new EntityNotFoundException("X"));
+//        PostDetailDto dto = PostDetailDto.fromEntity(post,author);
+        PostDetailDto dto = PostDetailDto.fromEntity(post);
         return dto;
     }
 

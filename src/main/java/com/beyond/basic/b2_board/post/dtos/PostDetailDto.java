@@ -18,13 +18,15 @@ public class PostDetailDto {
     private String contents;
     private String authorEmail;
 
-    public static PostDetailDto fromEntity(Post post, Author author){
+//    public static PostDetailDto fromEntity(Post post, Author author){
+    public static PostDetailDto fromEntity(Post post){
         return PostDetailDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
                 .category(post.getCategory())
                 .contents(post.getContents())
-                .authorEmail(author.getEmail())
+//                .authorEmail(author.getEmail())
+                .authorEmail(post.getAuthor().getEmail())
                 .build();
     }
 }

@@ -67,7 +67,13 @@ public class AuthorService {
             throw new IllegalArgumentException("email 중복입니다");
         }
         Author author = dto.toEntity();
-        authorMemoryRepository.save(author);
+
+
+        Author authorDB = authorMemoryRepository.save(author);
+        //       cascade persist를 활용한 예시
+        author.getPostList().add(Post.builder().title("ㅎㅇ").author(authorDB).build());
+//        cascade옵션이 아닌 예시
+//        postRepository.save(Post.builder().title("ㅎㅇ").author(authorDB).build());
 
 //        예외 발생시 transactional 어노테이션에 의해 rollback 처리
 //        authorMemoryRepository.findById(10L).orElseThrow(()->new NoSuchElementException("no"));
@@ -76,8 +82,8 @@ public class AuthorService {
     //    트랜잭션 처리가 필요없는 조회만 있는 메서드의 경우 성능향상을 위해 readonly처리
     @Transactional(readOnly = true)
     public AuthorDetailDto findById(Long id) {
-        Optional<Author> optAtuhor = authorMemoryRepository.findById(id);
-        Author author = optAtuhor.orElseThrow(() -> new NoSuchElementException("entity is not found"));
+        Optional<Author> optAuthor = authorMemoryRepository.findById(id);
+        Author author = optAuthor.orElseThrow(() -> new NoSuchElementException("entity is not found"));
 
 //        dto  조립
 //        AuthorDetailDto dto = AuthorDetailDto.builder()
@@ -88,8 +94,9 @@ public class AuthorService {
 //                .build();
 
 //        fromEntity는 아직 dto 객체가 만들어지지 않은 상태이므로 static 메서드로 설계
-        List<Post>postList = postRepository.findAllByAuthorIdAndDelYn(author.getId(),"N");
-        AuthorDetailDto dto = AuthorDetailDto.formEntity(author,postList.size());
+//        List<Post>postList = postRepository.findAllByAuthorIdAndDelYn(author.getId(),"N");
+//        AuthorDetailDto dto = AuthorDetailDto.formEntity(author,0);
+        AuthorDetailDto dto = AuthorDetailDto.formEntity(author);
 
         return dto;
     }
@@ -123,15 +130,15 @@ public class AuthorService {
     public void updatepw(AuthorUpdatePwDto dto) {
         Optional<Author> opta = authorMemoryRepository.findByEmail(dto.getEmail());
         Author author = opta.orElseThrow(() -> new EntityNotFoundException("entity is not found"));
-        author.updatePssword(dto.getPassword());
+        author.updatePassword(dto.getPassword());
 //        insert, update 모두 save 메서드 사용 -> 변경감지로 대체
 //        authorMemoryRepository.save(author);
 
 //        영속성컨텍스트 : 에플리케이션과 DB사이에서 객체를 보관하는 가상의 DB 역할
 //        1)쓰기 지연 : insert , update 등의 작업사항을 즉시 실행하지 않고, 커밋시점에 모아서 실행(성능향상)
 //        2)변경 감지(dirty checking) : 영속상태(managed)의 엔티티는 트랜잭션 커밋시점에 변경감지를 통해 별도의 save 없이 DB에 반영
-     }
-
     }
+
+}
 
 

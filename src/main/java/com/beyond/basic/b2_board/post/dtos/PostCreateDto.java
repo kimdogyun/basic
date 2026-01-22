@@ -25,7 +25,7 @@ public class PostCreateDto {
                 .title(this.title)
                 .contents(this.contents)
                 .category(this.category)
-                .authorId(author.getId())
+                .author(author)
                 .build();
     }
 }

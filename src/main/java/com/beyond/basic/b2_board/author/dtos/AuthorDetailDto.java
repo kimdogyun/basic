@@ -17,12 +17,12 @@ public class AuthorDetailDto {
     private int postCount;
     private String password;
 
-    public static AuthorDetailDto formEntity(Author author, int postcount) {
+    public static AuthorDetailDto formEntity(Author author) {
         return AuthorDetailDto.builder()
                 .id(author.getId())
                 .name(author.getName())
                 .email(author.getEmail())
-                .postCount(postcount)
+                .postCount(author.getPostList().size())
                 .password(author.getPassword())
                 .build();
 
