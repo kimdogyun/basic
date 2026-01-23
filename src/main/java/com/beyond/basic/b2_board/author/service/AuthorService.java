@@ -1,15 +1,13 @@
 package com.beyond.basic.b2_board.author.service;
 
 import com.beyond.basic.b2_board.author.domain.Author;
-import com.beyond.basic.b2_board.author.dtos.AuthorCreateDto;
-import com.beyond.basic.b2_board.author.dtos.AuthorDetailDto;
-import com.beyond.basic.b2_board.author.dtos.AuthorListDto;
-import com.beyond.basic.b2_board.author.dtos.AuthorUpdatePwDto;
+import com.beyond.basic.b2_board.author.dtos.*;
 import com.beyond.basic.b2_board.author.repository.*;
 import com.beyond.basic.b2_board.post.domain.Post;
 import com.beyond.basic.b2_board.post.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,12 +34,14 @@ public class AuthorService {
 //    장점3)순환참조방지(컴파일타임에 에러check)
     private final AuthorRepository authorMemoryRepository;
     private final PostRepository postRepository;
+    private final PasswordEncoder passwordEncoder;
 
     //    생성자가 하나밖에 없을떄에는 Autowired생략가능
     @Autowired
-    public AuthorService(AuthorRepository authorMemoryRepository, PostRepository postRepository) {
+    public AuthorService(AuthorRepository authorMemoryRepository, PostRepository postRepository, PasswordEncoder passwordEncoder) {
         this.authorMemoryRepository = authorMemoryRepository;
         this.postRepository = postRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 //    의존성주입방법3.@RequiredArgsConstructor 어노테이션 사용
 //    반드시 초기화되어야 하는 필드를 선언하고,@RequiredArgsConstructor어노테이션 선언시 생성자주입방식으로 의존성이 주입
@@ -66,13 +66,12 @@ public class AuthorService {
         if (authorMemoryRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("email 중복입니다");
         }
-        Author author = dto.toEntity();
-
-
-        Author authorDB = authorMemoryRepository.save(author);
+        Author author = dto.toEntity(passwordEncoder.encode(dto.getPassword()));
         //       cascade persist를 활용한 예시
-        author.getPostList().add(Post.builder().title("ㅎㅇ").author(authorDB).build());
+        author.getPostList().add(Post.builder().title("ㅎㅇ").author(author).build());
+        authorMemoryRepository.save(author);
 //        cascade옵션이 아닌 예시
+//        Author AuthroDB=authorMemoryRepository.save(author);
 //        postRepository.save(Post.builder().title("ㅎㅇ").author(authorDB).build());
 
 //        예외 발생시 transactional 어노테이션에 의해 rollback 처리
@@ -139,6 +138,21 @@ public class AuthorService {
 //        2)변경 감지(dirty checking) : 영속상태(managed)의 엔티티는 트랜잭션 커밋시점에 변경감지를 통해 별도의 save 없이 DB에 반영
     }
 
+    public Author login(AuthorLoginDto dto) {
+        Optional<Author> opt_author = authorMemoryRepository.findByEmail(dto.getEmail());
+        boolean check = true;
+        if (!opt_author.isPresent()) {
+            check = false;
+        } else {
+            if (!passwordEncoder.matches(dto.getPassword(), opt_author.get().getPassword())) {
+                check = false;
+            }
+        }
+        if (!check) {
+            throw new IllegalArgumentException("email 또는 비밀번호 불일치");
+        }
+        return opt_author.get();
+    }
 }
 
 

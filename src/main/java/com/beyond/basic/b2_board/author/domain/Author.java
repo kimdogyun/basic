@@ -1,14 +1,10 @@
 package com.beyond.basic.b2_board.author.domain;
 
-import com.beyond.basic.b2_board.common.BassTimeEntity;
+import com.beyond.basic.b2_board.common.domain.BaseTimeEntity;
 import com.beyond.basic.b2_board.post.domain.Post;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +17,7 @@ import java.util.List;
 @Builder
 //JPA에게 Entity관리를 위임하기 위한 어노테이션
 @Entity
-public class Author extends BassTimeEntity {
+public class Author extends BaseTimeEntity {
     @Id // pk 설정
 //    identity : auto_increment 설정. auto:id생성전략을 jpa에게 자동설정하도록 위임.
     @GeneratedValue(strategy = GenerationType.IDENTITY)

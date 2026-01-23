@@ -12,18 +12,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 //-게시글 : id, title(not null), contents(3000자이하), category, authorEmail(not null), delYn(String)
 //        -fromEntity, toEntity 활용
-//
 //1.게시글등록(/post/create)
 //-title, contents, category, authorEmail
 //-authorEmail 존재 유효성 체크 => authorRepository 주입 및 findByEmail 호출
-//
 //2.게시글목록조회(/posts)
 //-id, title, category, authorEmail
 //-삭제된 데이터 조회 제외 => List<Post> findByDelYn(String delYn)
-//
 //3.게시글상세조회(/post/1)
 //-id, title, category, contents, authorEmail
-//
 //4.게시글삭제(/post/1) => DeleteMapping 쓰면서 실질은 update작업
 
 @RestController
