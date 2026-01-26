@@ -10,6 +10,7 @@ import com.beyond.basic.b2_board.post.dtos.PostListDto;
 import com.beyond.basic.b2_board.post.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,10 @@ public class PostService {
     }
 
     public void save(PostCreateDto dto) {
-       Author author = authorRepository.findByEmail(dto.getAuthorEmail())
+//       Author author = authorRepository.findByEmail(dto.getAuthorEmail())
+        String email = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        System.out.println(email);
+       Author author = authorRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("없는 이메일 입니다."));
 
         Post post = dto.toEntity(author);
