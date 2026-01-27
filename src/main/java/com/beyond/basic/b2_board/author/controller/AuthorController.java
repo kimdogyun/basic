@@ -114,7 +114,6 @@ public class AuthorController {
         return token;
     }
     @GetMapping("/myInfo")
-//    public ResponseEntity<?> myInfo(){
     public ResponseEntity<?> myInfo(@AuthenticationPrincipal String principal){
         System.out.println(principal);
         AuthorDetailDto dto = authorService.myInfo();

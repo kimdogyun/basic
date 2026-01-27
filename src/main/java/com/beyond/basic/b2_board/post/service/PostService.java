@@ -10,6 +10,8 @@ import com.beyond.basic.b2_board.post.dtos.PostListDto;
 import com.beyond.basic.b2_board.post.repository.PostRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,17 +46,17 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public List<PostListDto> findAll() {
+    public Page<PostListDto> findAll(Pageable pageable) {
 //        List<Post>postList = postRepository.findByDelYn("N");
-        List<Post>postList = postRepository.findAllFetchInnerJoin();
-        List<PostListDto>dtoList = new ArrayList<>();
-        for (Post p : postList){
-            PostListDto dto  = PostListDto.fromEntity(p);
-            dtoList.add(dto);
-        }
-
-        return dtoList;
-
+//        List<Post>postList = postRepository.findAllFetchInnerJoin();
+        Page<Post> postList = postRepository.findAll(pageable);
+//        List<PostListDto>dtoList = new ArrayList<>();
+//        for (Post p : postList){
+//            PostListDto dto  = PostListDto.fromEntity(p);
+//            dtoList.add(dto);
+//        }
+//        Page 객체 안에 Entity에서 Dto로 쉽게 변환할수 있는 편의 제공
+        return postList.map(p->PostListDto.fromEntity(p));
     }
 
     @Transactional(readOnly = true)
