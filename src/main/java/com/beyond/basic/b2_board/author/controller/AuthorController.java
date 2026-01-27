@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -111,5 +112,14 @@ public class AuthorController {
 //        토큰 생성 및 리턴
         String token = jwtTokenProvider.createToken(author);
         return token;
+    }
+    @GetMapping("/myInfo")
+//    public ResponseEntity<?> myInfo(){
+    public ResponseEntity<?> myInfo(@AuthenticationPrincipal String principal){
+        System.out.println(principal);
+        AuthorDetailDto dto = authorService.myInfo();
+        return ResponseEntity
+                .status(HttpStatus.OK).body(dto);
+
     }
 }

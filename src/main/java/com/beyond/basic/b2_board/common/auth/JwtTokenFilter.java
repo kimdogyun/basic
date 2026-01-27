@@ -34,7 +34,7 @@ public class JwtTokenFilter extends GenericFilter {
             }
 //       Bearer문자열을 제거한 후에 jwt token만을 검증
             String token = bearerToken.substring(7);
-//       token 검증 및 clains 추출
+//       token 검증 및 claims 추출
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(st_secret_key)
                     .build()
