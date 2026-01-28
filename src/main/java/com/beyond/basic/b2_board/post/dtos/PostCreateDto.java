@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,6 +21,10 @@ public class PostCreateDto {
     private String contents;
     private String category;
 //    private String authorEmail;
+    @Builder.Default
+    private String appointment = "N";
+    @Builder.Default
+    private LocalDateTime appointmentTime = LocalDateTime.now();
 
     public Post toEntity(Author author){
         return Post.builder()
@@ -26,6 +32,8 @@ public class PostCreateDto {
                 .contents(this.contents)
                 .category(this.category)
                 .author(author)
+                .appointment(this.appointment)
+                .appointmentTime(this.appointmentTime)
                 .build();
     }
 }

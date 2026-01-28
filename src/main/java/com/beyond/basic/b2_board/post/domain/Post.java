@@ -5,6 +5,8 @@ import com.beyond.basic.b2_board.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @ToString
 @AllArgsConstructor
@@ -25,6 +27,10 @@ public class Post extends BaseTimeEntity {
     @Builder.Default
     private String delYn="N";
 
+    @Builder.Default
+    private String appointment="N";
+    private LocalDateTime appointmentTime = LocalDateTime.now();
+
 //    ManyToOne을 통해 fk 설정 (author_id 컬럼)
 //    ManyToOne을 통해 author_id컬럼으로 author객체 조회 및 객체 자동 생성
 //    fetch lazy(지연로딩) : author객체를 사용하지 않는한,author객체 생성X(서버부하감소)
@@ -37,5 +43,8 @@ public class Post extends BaseTimeEntity {
     public void deletePost(){
         this.delYn="Y";
 
+    }
+    public void updateAppointment(String appointment){
+        this.appointment = appointment;
     }
 }

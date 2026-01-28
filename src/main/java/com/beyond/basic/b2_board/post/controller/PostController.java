@@ -3,8 +3,10 @@ package com.beyond.basic.b2_board.post.controller;
 import com.beyond.basic.b2_board.post.dtos.PostCreateDto;
 import com.beyond.basic.b2_board.post.dtos.PostListDto;
 import com.beyond.basic.b2_board.post.dtos.PostDetailDto;
+import com.beyond.basic.b2_board.post.dtos.PostSearchDto;
 import com.beyond.basic.b2_board.post.service.PostService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +27,7 @@ import java.util.List;
 //3.게시글상세조회(/post/1)
 //-id, title, category, contents, authorEmail
 //4.게시글삭제(/post/1) => DeleteMapping 쓰면서 실질은 update작업
-
+@Slf4j
 @RestController
 public class PostController {
     private final PostService postService;
@@ -43,8 +45,11 @@ public class PostController {
 
     @GetMapping("/posts")
 //    페이징처리를 위한 데이터 요청 형식 : localhost:8080/posts?page=0&size=5&sort=title,asc
-    public Page<PostListDto> findAll(@PageableDefault(size = 10,sort = "id",direction = Sort.Direction.DESC) Pageable pageable) {
-        return postService.findAll(pageable);
+//    검색 + 페이징처리를 위한 데이터 요청 형식 : localhost:8080/posts?page=0&size=5&sort=title,asc&title=hello&category=경제
+    public Page<PostListDto> findAll(@PageableDefault(size = 10,sort = "id",direction = Sort.Direction.DESC)
+                                         Pageable pageable, @ModelAttribute PostSearchDto searchDto) {
+        log.info("dto : {}",searchDto);
+        return postService.findAll(pageable, searchDto);
     }
 
     @GetMapping("/post/{id}")
